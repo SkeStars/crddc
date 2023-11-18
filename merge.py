@@ -1,6 +1,6 @@
 import os
 import shutil
-import argparse
+from argparse import ArgumentParser
 
 # 创建命令行参数解析器
 parser = argparse.ArgumentParser(description='...')
