@@ -1,9 +1,9 @@
 import os
 import shutil
-from argparse import ArgumentParser
+import argparse
 
 # 创建命令行参数解析器
-parser = argparse.ArgumentParser(description='...')
+parser = argparse.ArgumentParser()
 parser.add_argument('dir1', help='Directory 1')
 parser.add_argument('dir2', help='Directory 2')
 parser.add_argument('output', help='Output directory')
