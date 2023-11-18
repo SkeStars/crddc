@@ -1,33 +1,33 @@
-import tqdm
 import os
+import shutil
+import argparse
 
-
+# 创建命令行参数解析器
 parser = argparse.ArgumentParser(description='...')
-parser.add_argument('file1', help='file1')
-parser.add_argument('file2', help='file2')
-parser.add_argument('output', help='outputfile')
+parser.add_argument('dir1', help='Directory 1')
+parser.add_argument('dir2', help='Directory 2')
+parser.add_argument('output', help='Output directory')
 args = parser.parse_args()
 
-file1 = args.file1
-file2 = args.file2
-output = args.output
+# 获取两个目录中的文件名
+files1 = set(os.listdir(args.dir1))
+files2 = set(os.listdir(args.dir2))
 
-with open(file1, 'r') as f1:
-    with open(file2, 'r') as f2:
-        with open(output, 'a') as w:
-            lines1 = f1.readlines()
-            lines2 = f2.readlines()
-            line2_dict = {}
-            for item in lines2:
-                name, box = item.split(',')
-                line2_dict[name] = box
-            for idx in tqdm.tqdm(range(len(lines1))):
-                name1, bboxs1 = lines1[idx].split(',')
-                bboxs1 = bboxs1[:-1]
-                if len(bboxs1) < 5:
-                    bboxs = line2_dict[name1]
-                elif len(line2_dict[name1]) < 5:
-                    bboxs = bboxs1 + '\n'
-                else:
-                    bboxs = bboxs1 + line2_dict[name1]
-                w.write(name1 + ',' + bboxs) 
+# 找出两个目录中都存在的文件
+common_files = files1.intersection(files2)
+
+# 对于每个共享的文件
+for filename in common_files:
+    file1 = os.path.join(args.dir1, filename)
+    file2 = os.path.join(args.dir2, filename)
+
+    # 计算每个文件的行数
+    with open(file1, 'r') as f1, open(file2, 'r') as f2:
+        lines1 = len(f1.readlines())
+        lines2 = len(f2.readlines())
+
+    # 判断哪个文件的行数最多，并将其复制到输出目录
+    if lines1 > lines2:
+        shutil.copy(file1, args.output)
+    else:
+        shutil.copy(file2, args.output)
